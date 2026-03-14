@@ -1,0 +1,180 @@
+
+<html>
+<head>
+
+<title>Loan Savings Calculator</title>
+
+<style>
+
+body{
+font-family: Inter, sans-serif;
+background:#f7f9fc;
+display:flex;
+justify-content:center;
+padding:40px;
+}
+
+.card{
+
+width:420px;
+background:white;
+border-radius:16px;
+padding:30px;
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+
+}
+
+h1{
+font-size:24px;
+margin-bottom:25px;
+}
+
+label{
+font-weight:600;
+}
+
+.value{
+font-size:22px;
+margin:10px 0;
+}
+
+input[type=range]{
+
+width:100%;
+margin-bottom:25px;
+
+}
+
+.result{
+
+background:#f2f7ff;
+padding:20px;
+border-radius:12px;
+
+}
+
+.result p{
+margin:8px 0;
+}
+
+button{
+
+margin-top:20px;
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+background:#2563eb;
+color:white;
+font-size:16px;
+cursor:pointer;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>Loan Savings Calculator</h1>
+
+<label>Loan Amount</label>
+<div class="value" id="loanVal">₹30,00,000</div>
+<input type="range" min="100000" max="10000000" value="3000000" id="loan">
+
+<label>Interest Rate</label>
+<div class="value" id="rateVal">11%</div>
+<input type="range" min="7" max="16" value="11" step="0.1" id="rate">
+
+<label>Tenure</label>
+<div class="value" id="tenureVal">20 years</div>
+<input type="range" min="5" max="30" value="20" id="tenure">
+
+<div class="result">
+
+<p>Current EMI: ₹<span id="current"></span></p>
+
+<p>Best EMI: ₹<span id="best"></span></p>
+
+<p style="color:green;font-weight:bold">
+You save ₹<span id="saving"></span>/month
+</p>
+
+</div>
+
+
+<button onclick="window.location.href='form.html'">
+Review My Loan
+</button>
+
+</div>
+
+<script>
+
+function emi(P, r, n) {
+
+P = Number(P)
+r = Number(r)
+n = Number(n)
+
+let monthlyRate = r / 12 / 100
+let months = n * 12
+
+let emi =
+(P * monthlyRate * Math.pow(1 + monthlyRate, months)) /
+(Math.pow(1 + monthlyRate, months) - 1)
+
+return emi
+
+}
+
+function update(){
+
+let loan = Number(document.getElementById("loan").value)
+let rate = Number(document.getElementById("rate").value)
+let tenure = Number(document.getElementById("tenure").value)
+
+document.getElementById("loanVal").innerText =
+"₹" + loan.toLocaleString()
+
+document.getElementById("rateVal").innerText =
+rate + "%"
+
+document.getElementById("tenureVal").innerText =
+tenure + " years"
+
+let current = emi(loan, rate, tenure)
+
+// example best bank rate
+let sbi = emi(loan, 9.15, tenure)
+let hdfc = emi(loan, 9.25, tenure)
+let icici = emi(loan,8, tenure)
+
+let best = Math.min(sbi, hdfc, icici)
+
+let saving = current - best
+
+document.getElementById("current").innerText =
+Math.round(current).toLocaleString()
+
+document.getElementById("best").innerText =
+Math.round(best).toLocaleString()
+
+document.getElementById("saving").innerText =
+Math.round(saving).toLocaleString()
+
+}
+
+document.querySelectorAll("input").forEach(el=>{
+el.addEventListener("input", update)
+})
+
+update()
+
+</script>
+
+</body>
+</html>
